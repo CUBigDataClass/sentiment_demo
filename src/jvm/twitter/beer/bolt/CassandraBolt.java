@@ -25,8 +25,8 @@ public class CassandraBolt extends BaseRichBolt{
 
     @Override
     public void execute(Tuple tuple) {
-    	int tweet_id = (int) (Math.random() * (10000)) ;
-    	this.client.loadData("INSERT INTO twitter.tweet (tweet_id, tweet) VALUES (" + tweet_id + ",'" + tuple.getString(0) + "');");
+    	Integer tweet_id = tuple.getInteger(0);
+    	this.client.loadData("INSERT INTO twitter.tweet (tweet_id, tweet) VALUES (" + tweet_id + ",'" + tuple.getValue(1) + "');");
     	//this.client.querySchema("SELECT * from twitter.tweet WHERE tweet_id = " + tweet_id + ");");
     	_collector.emit(tuple, new Values(tweet_id));
     	_collector.ack(tuple);

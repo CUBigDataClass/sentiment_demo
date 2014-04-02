@@ -14,38 +14,18 @@ import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 import twitter.beer.spout.TwitterSpout;
 import twitter.beer.bolt.CassandraBolt;
+import twitter.beer.bolt.ExtractBolt;
 import java.util.Map;
 
 // A basic topology that reads from the Twitter stream and does basic processing on the data
 public class TwitterTopology {
 
-	public static class ExtractBolt extends BaseRichBolt {
-		// Extracts basic information from the tweet object
-		OutputCollector _collector;
-
-	    @Override
-	    public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
-	      _collector = collector;
-	    }
-
-	    @Override
-	    public void execute(Tuple tuple) {
-	      _collector.emit(tuple, new Values(tuple.getString(0) + "mod"));
-	      _collector.ack(tuple);
-	    }
-
-	    @Override
-	    public void declareOutputFields(OutputFieldsDeclarer declarer) {
-	      declarer.declare(new Fields("word"));
-	    }
-	}
-
 	public static void main(String[] args) throws Exception{
 		// Create a new Topology
 		TopologyBuilder builder = new TopologyBuilder();
 
-		builder.setSpout("tweetId", new TwitterSpout(), 10);
-		builder.setBolt("tweetVal", new ExtractBolt(), 3).shuffleGrouping("tweetId");
+		builder.setSpout("tweetSpout", new TwitterSpout(), 10);
+		builder.setBolt("tweetVal", new ExtractBolt(), 3).shuffleGrouping("tweetSpout");
 		builder.setBolt("cassandra", new CassandraBolt(), 3).shuffleGrouping("tweetVal");
 
 		// Create new config
