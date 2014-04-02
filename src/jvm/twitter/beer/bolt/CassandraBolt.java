@@ -7,19 +7,29 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import twitter.beer.CassandraClient;
+import backtype.storm.utils.Utils;
+import backtype.storm.task.TopologyContext;
+import java.util.Map;
 
 public class CassandraBolt extends BaseRichBolt{
 	OutputCollector _collector;
+	CassandraClient client;
 	
 	@Override
     public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
       _collector = collector;
+      this.client = new CassandraClient();
+      // Start client
+      this.client.connect("127.0.0.1");
     }
 
     @Override
     public void execute(Tuple tuple) {
-      _collector.emit(tuple, new Values(tuple.getString(0) + "!!!"));
-      _collector.ack(tuple);
+    	int tweet_id = (int) (Math.random() * (10000)) ;
+    	this.client.loadData("INSERT INTO twitter.tweet (tweet_id, tweet) VALUES (" + tweet_id + ",'" + tuple.getString(0) + "');");
+    	//this.client.querySchema("SELECT * from twitter.tweet WHERE tweet_id = " + tweet_id + ");");
+    	_collector.emit(tuple, new Values(tweet_id));
+    	_collector.ack(tuple);
     }
 
     @Override
@@ -29,7 +39,7 @@ public class CassandraBolt extends BaseRichBolt{
 
   	@Override
   	public void  cleanup(){
-
+  		this.client.close();
   	}
 
 }

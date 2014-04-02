@@ -13,7 +13,7 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 import twitter.beer.spout.TwitterSpout;
-
+import twitter.beer.bolt.CassandraBolt;
 import java.util.Map;
 
 // A basic topology that reads from the Twitter stream and does basic processing on the data
@@ -30,7 +30,7 @@ public class TwitterTopology {
 
 	    @Override
 	    public void execute(Tuple tuple) {
-	      _collector.emit(tuple, new Values(tuple.getString(0) + "!!!"));
+	      _collector.emit(tuple, new Values(tuple.getString(0) + "mod"));
 	      _collector.ack(tuple);
 	    }
 
@@ -46,6 +46,7 @@ public class TwitterTopology {
 
 		builder.setSpout("tweetId", new TwitterSpout(), 10);
 		builder.setBolt("tweetVal", new ExtractBolt(), 3).shuffleGrouping("tweetId");
+		builder.setBolt("cassandra", new CassandraBolt(), 3).shuffleGrouping("tweetVal");
 
 		// Create new config
 		Config conf = new Config();
