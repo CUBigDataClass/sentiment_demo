@@ -8,7 +8,9 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 import backtype.storm.task.TopologyContext;
+
 import java.util.Map;
+import org.json.JSONObject;
 
 public class ExtractBolt extends BaseRichBolt {
 	// Extracts basic information from the tweet object
@@ -21,9 +23,19 @@ public class ExtractBolt extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-    	int tweet_id = (int) (Math.random() * (10000)) ;
-      	_collector.emit(tuple, new Values(tweet_id, tuple.getString(0) + "mod"));
-      	_collector.ack(tuple);
+    	JSONObject tweetJSON = new JSONObject(tuple.getString(0));
+    	int tweet_id = tweetJSON.getInt("id");
+    	String text = tweetJSON.getString("text").trim();
+    	String language = tweetJSON.getString("lang");
+    	
+    	if(language.equals("en")){
+    		_collector.emit(tuple, new Values(tweet_id, text));
+      		_collector.ack(tuple);
+    	}
+      	else{
+      		_collector.emit(tuple, new Values(tweet_id, language));
+      		_collector.ack(tuple);
+      	}
     }
 
     @Override
