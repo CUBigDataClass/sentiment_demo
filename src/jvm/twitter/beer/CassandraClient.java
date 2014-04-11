@@ -14,7 +14,7 @@ public class CassandraClient{
 	private Session session;
 
 	public void connect(String node){
-		cluster = Cluster.builder().addContactPoint(node).build();
+		cluster = Cluster.builder().withPort(9042).addContactPoint(node).build();
 		Metadata metadata = cluster.getMetadata();
 		session = cluster.connect();
 
