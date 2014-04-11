@@ -58,9 +58,15 @@ public class TwitterTopology {
 		conf.setDebug(true);
 
 		if (args != null && args.length > 0) {
-	      conf.setNumWorkers(3);
+	      try{
+	      	conf.setNumWorkers(3);
+	      	StormSubmitter.submitTopology(args[0], conf, builder.createTopology());	
+	      }
+	      catch(Exception ex){
+	      	ex.printStackTrace();
 
-	      StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+	      }
+	      
 	    }
 	    else {
 
