@@ -76,7 +76,7 @@
     <dependency>
       <groupId>com.datastax.cassandra</groupId>
       <artifactId>cassandra-driver-core</artifactId>
-      <version>2.0.1cd </version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.codahale.metrics</groupId>
