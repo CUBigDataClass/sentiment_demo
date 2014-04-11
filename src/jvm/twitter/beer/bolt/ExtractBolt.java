@@ -24,7 +24,7 @@ public class ExtractBolt extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
     	JSONObject tweetJSON = new JSONObject(tuple.getString(0));
-    	int tweet_id = tweetJSON.getInt("id");
+    	String tweet_id = tweetJSON.getString("id_str").trim();
     	String text = tweetJSON.getString("text").trim();
     	String language = tweetJSON.getString("lang");
     	

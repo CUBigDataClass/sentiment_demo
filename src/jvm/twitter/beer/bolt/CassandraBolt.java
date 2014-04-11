@@ -20,14 +20,14 @@ public class CassandraBolt extends BaseRichBolt{
       _collector = collector;
       this.client = new CassandraClient();
       // Start client
-      //this.client.connect("127.0.0.1");
-      this.client.connect("54.186.242.244");
+      this.client.connect("127.0.0.1");
+      //this.client.connect("54.186.242.244");
     }
 
     @Override
     public void execute(Tuple tuple) {
-    	Integer tweet_id = tuple.getInteger(0);
-    	this.client.loadData("INSERT INTO twitter.tweet (tweet_id, tweet) VALUES (" + tweet_id + ",'" + tuple.getValue(1) + "');");
+    	String tweet_id = tuple.getString(0);
+    	this.client.loadData("INSERT INTO twitter.tweet (tweet_id, tweet) VALUES ('" + tweet_id + "','" + tuple.getValue(1) + "');");
     	//this.client.querySchema("SELECT * from twitter.tweet WHERE tweet_id = " + tweet_id + ");");
     	_collector.emit(tuple, new Values(tweet_id));
     	_collector.ack(tuple);
