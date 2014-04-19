@@ -21,7 +21,7 @@ public class TwitterSpout extends BaseRichSpout {
 
 
   @Override
-  public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
+  public void open(Map conf, final TopologyContext context, final SpoutOutputCollector collector) {
     _collector = collector;
     _rand = new Random();
   }

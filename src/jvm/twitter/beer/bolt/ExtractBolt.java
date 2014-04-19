@@ -27,19 +27,28 @@ public class ExtractBolt extends BaseRichBolt {
     	String tweet_id = tweetJSON.getString("id_str").trim();
     	String text = tweetJSON.getString("text").trim();
     	String language = tweetJSON.getString("lang");
+      JSONObject coordinatesObject = tweetJSON.getJSONObject("coordinates");
+      JSONObject geoObject = tweetJSON.getJSONObject("geo");
+      String coordinates = new String();
+
+      // Find the latitude and longitude
+      if(coordinatesObject.has("coordinates")){
+        coordinates = coordinatesObject.getString("coordinates");
+      }
+
+      else if(geoObject.has("coordinates")){
+        coordinates = coordinatesObject.getString("coordinates");
+      }
     	
-    	if(language.equals("en")){
-    		_collector.emit(tuple, new Values(tweet_id, text));
-      		_collector.ack(tuple);
-    	}
-      	else{
-      		_collector.emit(tuple, new Values(tweet_id, language));
-      		_collector.ack(tuple);
-      	}
+      // Emit only values that are geolocated
+    	if(!coordinates.isEmpty()){
+        _collector.emit(tuple, new Values(tweet_id, text, coordinates));
+        _collector.ack(tuple);  
+      }
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-      declarer.declare(new Fields("tweetID", "tweet"));
+      declarer.declare(new Fields("tweetID", "tweet", "coordinates"));
     }
 }

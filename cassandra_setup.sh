@@ -6,6 +6,6 @@ CREATE KEYSPACE twitter WITH replication = {
 USE twitter;
 
 CREATE TABLE tweet (
-  tweet_id int,
+  tweet_id text,
   tweet text,
   PRIMARY KEY (tweet_id));

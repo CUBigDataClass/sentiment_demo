@@ -17,6 +17,7 @@ import backtype.storm.utils.Utils;
 import twitter.beer.spout.TwitterSpout;
 import twitter.beer.bolt.CassandraBolt;
 import twitter.beer.bolt.ExtractBolt;
+import twitter.beer.bolt.NodeBolt;
 
 import storm.kafka.trident.GlobalPartitionInformation;
 import storm.kafka.BrokerHosts;
@@ -52,10 +53,12 @@ public class TwitterTopology {
 		builder.setSpout("tweetSpout", new KafkaSpout(kafkaSpoutConfig), 10);
 		builder.setBolt("tweetVal", new ExtractBolt(), 3).shuffleGrouping("tweetSpout");
 		builder.setBolt("cassandra", new CassandraBolt(), 3).shuffleGrouping("tweetVal");
+		builder.setBolt("nodejs", new NodeBolt(), 3).shuffleGrouping("tweetVal");
 
 		// Create new config
 		Config conf = new Config();
 		conf.setDebug(true);
+		conf.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 5000);
 
 		if (args != null && args.length > 0) {
 	      try{
