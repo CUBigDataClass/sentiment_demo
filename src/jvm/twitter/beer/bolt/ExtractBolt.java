@@ -11,6 +11,7 @@ import backtype.storm.task.TopologyContext;
 
 import java.util.Map;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class ExtractBolt extends BaseRichBolt {
 	// Extracts basic information from the tweet object
@@ -27,23 +28,23 @@ public class ExtractBolt extends BaseRichBolt {
     	String tweet_id = tweetJSON.getString("id_str").trim();
     	String text = tweetJSON.getString("text").trim();
     	String language = tweetJSON.getString("lang");
-      JSONObject coordinatesObject = tweetJSON.getJSONObject("coordinates");
-      JSONObject geoObject = tweetJSON.getJSONObject("geo");
-      String coordinates = new String();
+      JSONArray coordinates = new JSONArray();
 
       // Find the latitude and longitude
-      if(coordinatesObject.has("coordinates")){
-        coordinates = coordinatesObject.getString("coordinates");
+      if(!(tweetJSON.isNull("coordinates"))){
+        coordinates = tweetJSON.getJSONObject("coordinates").getJSONArray("coordinates");
       }
 
-      else if(geoObject.has("coordinates")){
-        coordinates = coordinatesObject.getString("coordinates");
+      else if(!(tweetJSON.isNull("geo"))){
+        coordinates = tweetJSON.getJSONObject("geo").getJSONArray("coordinates");
       }
     	
       // Emit only values that are geolocated
-    	if(!coordinates.isEmpty()){
+    	if(coordinates.length() < 0){
         _collector.emit(tuple, new Values(tweet_id, text, coordinates));
         _collector.ack(tuple);  
+      } else{
+        System.out.println("No coordinates");
       }
     }
 
