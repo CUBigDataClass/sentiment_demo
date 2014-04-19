@@ -8,4 +8,5 @@ USE twitter;
 CREATE TABLE tweet (
   tweet_id text,
   tweet text,
+  coordinates text,
   PRIMARY KEY (tweet_id));

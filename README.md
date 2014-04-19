@@ -28,6 +28,9 @@ To Run:
 <br/>
 <code>
 mvn -f pom.xml clean install  
+</code>
 <br/>
+<code>
 storm jar target/twitter-beer-0.0.1-SNAPSHOT-with-dependencies.jar twitter.beer.TwitterTopology
 </code>
+
