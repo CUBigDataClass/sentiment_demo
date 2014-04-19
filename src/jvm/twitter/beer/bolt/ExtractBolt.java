@@ -28,24 +28,22 @@ public class ExtractBolt extends BaseRichBolt {
     	String tweet_id = tweetJSON.getString("id_str").trim();
     	String text = tweetJSON.getString("text").trim();
     	String language = tweetJSON.getString("lang");
-      JSONArray coordinates = new JSONArray();
+      String coordinates = new String();
 
       // Find the latitude and longitude
       if(!(tweetJSON.isNull("coordinates"))){
-        coordinates = tweetJSON.getJSONObject("coordinates").getJSONArray("coordinates");
+        coordinates = tweetJSON.getJSONObject("coordinates").getJSONArray("coordinates").toString();
       }
 
       else if(!(tweetJSON.isNull("geo"))){
-        coordinates = tweetJSON.getJSONObject("geo").getJSONArray("coordinates");
+        coordinates = tweetJSON.getJSONObject("geo").getJSONArray("coordinates").toString();
       }
     	
-      // Emit only values that are geolocated
-    	if(coordinates.length() < 0){
-        _collector.emit(tuple, new Values(tweet_id, text, coordinates));
-        _collector.ack(tuple);  
-      } else{
-        System.out.println("No coordinates");
-      }
+   
+ 
+      _collector.emit(tuple, new Values(tweet_id, text, coordinates));
+      _collector.ack(tuple);  
+
     }
 
     @Override

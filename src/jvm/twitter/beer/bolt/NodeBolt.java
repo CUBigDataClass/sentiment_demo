@@ -12,8 +12,11 @@ import backtype.storm.task.TopologyContext;
 import java.util.Map;
 import java.net.Socket;
 import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.io.PrintWriter;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class NodeBolt extends BaseRichBolt {
 	// Extracts basic information from the tweet object
@@ -27,9 +30,10 @@ public class NodeBolt extends BaseRichBolt {
       _collector = collector;
      
       try{
-         Socket tcpClient = new Socket("localhost", 6000);
-         DataOutputStream tweetStream = new DataOutputStream(tcpClient.getOutputStream());
-         PrintWriter tweetPW = new PrintWriter(tweetStream);   
+         tcpClient = new Socket("localhost", 1337);
+         tweetStream = new DataOutputStream(tcpClient.getOutputStream());
+         tweetPW = new PrintWriter(tweetStream, true);
+         
       } catch(Exception e){
         e.printStackTrace();
       }
