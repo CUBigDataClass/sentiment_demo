@@ -10,6 +10,7 @@ import twitter.beer.CassandraClient;
 import backtype.storm.utils.Utils;
 import backtype.storm.task.TopologyContext;
 import java.util.Map;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 
 public class CassandraBolt extends BaseRichBolt{
 	OutputCollector _collector;
@@ -27,7 +28,9 @@ public class CassandraBolt extends BaseRichBolt{
     @Override
     public void execute(Tuple tuple) {
     	String tweet_id = tuple.getString(0);
-    	this.client.loadData("INSERT INTO twitter.tweet (tweet_id, tweet) VALUES ('" + tweet_id + "','" + tuple.getValue(1) + "');");
+      String text = tuple.getString(1);
+      String insertion = QueryBuilder.insertInto("twitter", "tweet").value("tweet_id", tweet_id).value("tweet", text).toString();
+    	this.client.loadData(insertion);
     	//this.client.querySchema("SELECT * from twitter.tweet WHERE tweet_id = " + tweet_id + ");");
     	_collector.emit(tuple, new Values(tweet_id));
     	_collector.ack(tuple);
