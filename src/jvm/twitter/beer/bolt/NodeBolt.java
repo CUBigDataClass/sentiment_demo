@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONTokener;
 
 public class NodeBolt extends BaseRichBolt {
 	// Extracts basic information from the tweet object
@@ -45,14 +46,18 @@ public class NodeBolt extends BaseRichBolt {
     	JSONObject tweetJSON = new JSONObject();
     	String tweetId = tuple.getString(0);
       String tweetText = tuple.getString(1);
-    	String coordinates = tuple.getString(2);
+      String coordinateString = tuple.getString(2);
 
-      tweetJSON.append("tweetID", tweetId);
-      tweetJSON.append("text", tweetText);
-      tweetJSON.append("coordinates", coordinates);
+      if(!coordinateString.isEmpty()){
+        JSONTokener coordinateTokener = new JSONTokener(tuple.getString(2));
+        JSONArray coordinates = new JSONArray(coordinateTokener);
+        tweetJSON.append("tweetID", tweetId);
+        tweetJSON.append("text", tweetText);
+        tweetJSON.append("coordinates", coordinates);
 
-      tweetPW.println(tweetJSON);
-      tweetPW.flush();
+        tweetPW.println(tweetJSON);
+        tweetPW.flush();
+      }
 
   		_collector.emit(tuple, new Values(tweetId));
   		_collector.ack(tuple);
