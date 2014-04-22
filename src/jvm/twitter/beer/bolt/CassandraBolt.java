@@ -30,7 +30,9 @@ public class CassandraBolt extends BaseRichBolt{
     	String tweet_id = tuple.getString(0);
       String text = tuple.getString(1);
       String coordinates = tuple.getString(2);
-      String insertion = QueryBuilder.insertInto("twitter", "tweet").value("tweet_id", tweet_id).value("tweet", text).value("coordinates", coordinates).toString();
+      String classification = tuple.getString(3);
+
+      String insertion = QueryBuilder.insertInto("twitter", "tweet").value("tweet_id", tweet_id).value("tweet", text).value("coordinates", coordinates).value("classification", classification).toString();
     	this.client.loadData(insertion);
     	//this.client.querySchema("SELECT * from twitter.tweet WHERE tweet_id = " + tweet_id + ");");
     	_collector.emit(tuple, new Values(tweet_id));

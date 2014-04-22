@@ -47,6 +47,7 @@ public class NodeBolt extends BaseRichBolt {
     	String tweetId = tuple.getString(0);
       String tweetText = tuple.getString(1);
       String coordinateString = tuple.getString(2);
+      String classifcation = tuple.getString(3);
 
       if(!coordinateString.isEmpty()){
         JSONTokener coordinateTokener = new JSONTokener(tuple.getString(2));
@@ -54,6 +55,7 @@ public class NodeBolt extends BaseRichBolt {
         tweetJSON.append("tweetID", tweetId);
         tweetJSON.append("text", tweetText);
         tweetJSON.append("coordinates", coordinates);
+        tweetJSON.append("classifcation", classifcation);
 
         tweetPW.println(tweetJSON);
         tweetPW.flush();
