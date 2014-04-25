@@ -21,8 +21,8 @@ public class CassandraBolt extends BaseRichBolt{
       _collector = collector;
       this.client = new CassandraClient();
       // Start client
-      this.client.connect("127.0.0.1");
-      //this.client.connect("54.186.242.244");
+      //this.client.connect("127.0.0.1");
+      this.client.connect("54.187.85.33");
     }
 
     @Override

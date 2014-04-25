@@ -43,7 +43,7 @@ public class TwitterTopology {
 
 		// Set up KafkaSpout
 		GlobalPartitionInformation hostsAndPartitions = new GlobalPartitionInformation();
-		hostsAndPartitions.addPartition(0, new Broker("localhost", 9092));
+		hostsAndPartitions.addPartition(0, new Broker("54.187.141.69", 9092));
 		BrokerHosts brokerHosts = new StaticHosts(hostsAndPartitions);
 
 		SpoutConfig kafkaSpoutConfig = new SpoutConfig(brokerHosts, "tweets", "", "storm");
