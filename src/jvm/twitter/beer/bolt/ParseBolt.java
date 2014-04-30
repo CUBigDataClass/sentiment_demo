@@ -10,14 +10,20 @@ import backtype.storm.utils.Utils;
 import backtype.storm.task.TopologyContext;
 
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Arrays;
 
 public class ParseBolt extends BaseRichBolt {
 	// Parses the sentence
 	OutputCollector _collector;
+  HashSet<String> stopWords;
  
   @Override
   public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
     _collector = collector;
+
+    String[] stopWordArray = {"a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with"};
+    stopWords = new HashSet<String>(Arrays.asList(stopWordArray));
   }
 
   @Override
