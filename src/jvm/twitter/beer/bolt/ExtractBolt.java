@@ -26,6 +26,7 @@ import com.google.code.geocoder.model.GeocoderGeometry;
 public class ExtractBolt extends BaseRichBolt {
 	// Extracts basic information from the tweet object
 	OutputCollector _collector;
+  final Geocoder geocoder = new Geocoder();
     
     @Override
     public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
@@ -48,10 +49,11 @@ public class ExtractBolt extends BaseRichBolt {
       }
 
       else if(!(tweetJSON.isNull("geo"))){
-        coordinates = tweetJSON.getJSONObject("geo").getJSONArray("coordinates").toString();
+        JSONArray geoCoordinates = tweetJSON.getJSONObject("geo").getJSONArray("coordinates");
+        // Switches coordinates to the correct format
+        coordinates = new JSONArray().put(0, geoCoordinates.get(1)).put(1, geoCoordinates.get(0)).toString();       
       }
     	else if(!(userLocation.isEmpty())){
-         final Geocoder geocoder = new Geocoder();
           GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(userLocation).setLanguage("en").getGeocoderRequest();
           GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
           List<GeocoderResult> listResponse = geocoderResponse.getResults();

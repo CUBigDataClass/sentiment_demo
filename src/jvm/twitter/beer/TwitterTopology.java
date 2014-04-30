@@ -19,7 +19,9 @@ import twitter.beer.bolt.ClassifyBolt;
 import twitter.beer.bolt.CassandraBolt;
 import twitter.beer.bolt.ExtractBolt;
 import twitter.beer.bolt.NodeBolt;
-
+import twitter.beer.bolt.WordBolt;
+import twitter.beer.bolt.WordNodeBolt;
+import twitter.beer.bolt.ParseBolt;
 
 import storm.kafka.trident.GlobalPartitionInformation;
 import storm.kafka.BrokerHosts;
@@ -55,8 +57,12 @@ public class TwitterTopology {
 		builder.setSpout("tweetSpout", new KafkaSpout(kafkaSpoutConfig), 10);
 		builder.setBolt("tweetVal", new ExtractBolt(), 3).shuffleGrouping("tweetSpout");
 		builder.setBolt("tweetClassify", new ClassifyBolt(), 3).shuffleGrouping("tweetVal");
-		builder.setBolt("cassandra", new CassandraBolt(), 3).shuffleGrouping("tweetClassify");
-		builder.setBolt("nodejs", new NodeBolt(), 3).shuffleGrouping("tweetClassify");
+		builder.setBolt("cassandra", new CassandraBolt(), 2).shuffleGrouping("tweetClassify");
+		builder.setBolt("nodejs", new NodeBolt(), 2).shuffleGrouping("tweetClassify");
+
+		builder.setBolt("parse", new ParseBolt(), 3).shuffleGrouping("tweetClassify");
+		builder.setBolt("count", new WordBolt(), 3).fieldsGrouping("parse", new Fields("word"));
+		builder.setBolt("nodeWord", new WordNodeBolt(), 2).fieldsGrouping("count", new Fields("classification"));
 
 		// Create new config
 		Config conf = new Config();
