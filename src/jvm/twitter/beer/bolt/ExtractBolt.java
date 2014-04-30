@@ -26,12 +26,12 @@ import com.google.code.geocoder.model.GeocoderGeometry;
 public class ExtractBolt extends BaseRichBolt {
 	// Extracts basic information from the tweet object
 	OutputCollector _collector;
-  final Geocoder geocoder = new Geocoder();
+  Geocoder geocoder;
     
     @Override
     public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
       _collector = collector;
-      //geocoder = new Geocoder();
+      geocoder = new Geocoder();
     }
 
     @Override
