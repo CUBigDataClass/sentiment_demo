@@ -32,10 +32,15 @@ public class ParseBolt extends BaseRichBolt {
     String[] words = text.split("\\s+");
     String type = tuple.getString(3);
 
-    for(int i=0; i < words.length; i++){
-      _collector.emit(tuple, new Values(words[i], type));
-      _collector.ack(tuple);
+    for(String word : words)
+    {
+      if(!stopWords.contains(word.toLowerCase()))
+      {
+        _collector.emit(tuple, new Values(word, type));
+        _collector.ack(tuple);
+      }
     }
+
   }
 
   @Override
