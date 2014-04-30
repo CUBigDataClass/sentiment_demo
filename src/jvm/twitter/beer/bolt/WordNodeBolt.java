@@ -33,7 +33,7 @@ public class WordNodeBolt extends BaseRichBolt {
       _collector = collector;
      
       try{
-         tcpClient = new Socket("localhost", 1337);
+         tcpClient = new Socket("54.187.141.69", 1337);
          tweetStream = new DataOutputStream(tcpClient.getOutputStream());
          tweetPW = new PrintWriter(tweetStream, true);
          

@@ -57,13 +57,16 @@ public class ExtractBolt extends BaseRichBolt {
           GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(userLocation).setLanguage("en").getGeocoderRequest();
           GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
           List<GeocoderResult> listResponse = geocoderResponse.getResults();
-          GeocoderResult data = listResponse.get(0);
-          GeocoderGeometry geometry = data.getGeometry();
-          LatLng geoCoord = geometry.getLocation();
-          BigDecimal latitude = geoCoord.getLat();
-          BigDecimal longitude = geoCoord.getLng();
+          if(listResponse.size() > 1){
+            GeocoderResult data = listResponse.get(0);
+            GeocoderGeometry geometry = data.getGeometry();
+            LatLng geoCoord = geometry.getLocation();
+            BigDecimal latitude = geoCoord.getLat();
+            BigDecimal longitude = geoCoord.getLng();
 
-          coordinates = "[" + latitude.toString() + "," + longitude.toString() + "]";
+            coordinates = "[" + latitude.toString() + "," + longitude.toString() + "]";
+          }
+         
       }
    
  
