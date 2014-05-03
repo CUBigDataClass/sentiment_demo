@@ -54,7 +54,7 @@ public class WordBolt extends BaseRichBolt {
   private Integer updateCount(Integer count){
     if (count == null){
       count = 0;
-    }
+    } 
 
     count++;
 

@@ -33,7 +33,8 @@ public class WordNodeBolt extends BaseRichBolt {
       _collector = collector;
      
       try{
-         tcpClient = new Socket("54.187.141.69", 1337);
+         //tcpClient = new Socket("54.187.141.69", 1337);
+          tcpClient = new Socket("localhost", 1337);
          tweetStream = new DataOutputStream(tcpClient.getOutputStream());
          tweetPW = new PrintWriter(tweetStream, true);
          
@@ -52,7 +53,7 @@ public class WordNodeBolt extends BaseRichBolt {
       Float percentage;
 
       if(type.equals("wine")){
-        if(wineCount == null){
+        if(wineCount == null ){
           wineCount = 1;
         }else{
           wineCount++;
@@ -61,7 +62,7 @@ public class WordNodeBolt extends BaseRichBolt {
         percentage = (float) count / wineCount;
 
       }else{
-        if(beerCount == null){
+        if(beerCount == null ){
           beerCount = 1;
         }else{
           beerCount++;
@@ -71,12 +72,12 @@ public class WordNodeBolt extends BaseRichBolt {
 
       }
 
-      if(percentage > 0.1){
+      if(percentage > 0.01){
         wordJSON.append("word", word);
         wordJSON.append("percent", percentage);
         wordJSON.append("classifcation", type);
 
-        tweetPW.println(wordJSON);
+        tweetPW.println(wordJSON.toString());
         tweetPW.flush();
       }
 

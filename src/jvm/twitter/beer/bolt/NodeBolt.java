@@ -31,7 +31,8 @@ public class NodeBolt extends BaseRichBolt {
       _collector = collector;
      
       try{
-         tcpClient = new Socket("54.187.141.69", 1337);
+         //tcpClient = new Socket("54.187.141.69", 1337);
+         tcpClient = new Socket("localhost", 1337);
          tweetStream = new DataOutputStream(tcpClient.getOutputStream());
          tweetPW = new PrintWriter(tweetStream, true);
          
@@ -57,7 +58,7 @@ public class NodeBolt extends BaseRichBolt {
         tweetJSON.append("coordinates", coordinates);
         tweetJSON.append("classifcation", classifcation);
 
-        tweetPW.println(tweetJSON);
+        tweetPW.println(tweetJSON.toString());
         tweetPW.flush();
       }
 

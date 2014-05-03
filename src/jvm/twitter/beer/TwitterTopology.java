@@ -53,25 +53,26 @@ public class TwitterTopology {
 		kafkaSpoutConfig.forceFromStart = true;
 
 	
-		//builder.setSpout("tweetSpout", new TwitterSpout(), 10);
-		builder.setSpout("tweetSpout", new KafkaSpout(kafkaSpoutConfig), 10);
-		builder.setBolt("tweetVal", new ExtractBolt(), 3).shuffleGrouping("tweetSpout");
-		builder.setBolt("tweetClassify", new ClassifyBolt(), 3).shuffleGrouping("tweetVal");
-		builder.setBolt("cassandra", new CassandraBolt(), 2).shuffleGrouping("tweetClassify");
+		builder.setSpout("tweetSpout", new TwitterSpout(), 10);
+		//builder.setSpout("tweetSpout", new KafkaSpout(kafkaSpoutConfig), 10);
+		builder.setBolt("tweetVal", new ExtractBolt(), 5).shuffleGrouping("tweetSpout");
+		builder.setBolt("tweetClassify", new ClassifyBolt(), 2).shuffleGrouping("tweetVal");
+		builder.setBolt("cassandra", new CassandraBolt(), 4).shuffleGrouping("tweetClassify");
 		builder.setBolt("nodejs", new NodeBolt(), 2).shuffleGrouping("tweetClassify");
 
 		builder.setBolt("parse", new ParseBolt(), 3).shuffleGrouping("tweetClassify");
-		builder.setBolt("count", new WordBolt(), 3).fieldsGrouping("parse", new Fields("word"));
+		builder.setBolt("count", new WordBolt(), 2).fieldsGrouping("parse", new Fields("word"));
 		builder.setBolt("nodeWord", new WordNodeBolt(), 2).fieldsGrouping("count", new Fields("classification"));
 
 		// Create new config
 		Config conf = new Config();
 		conf.setDebug(true);
 		conf.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 5000);
+		conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, 120);
 
 		if (args != null && args.length > 0) {
 	      try{
-	      	conf.setNumWorkers(3);
+	      	conf.setNumWorkers(10);
 	      	StormSubmitter.submitTopology(args[0], conf, builder.createTopology());	
 	      }
 	      catch(Exception ex){
