@@ -75,7 +75,7 @@ public class WordNodeBolt extends BaseRichBolt {
       if(percentage > 0.01){
         wordJSON.append("word", word);
         wordJSON.append("percent", percentage);
-        wordJSON.append("classifcation", type);
+        wordJSON.append("classification", type);
 
         tweetPW.println(wordJSON.toString());
         tweetPW.flush();

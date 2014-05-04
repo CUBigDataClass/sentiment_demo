@@ -22,7 +22,7 @@ public class ParseBolt extends BaseRichBolt {
   public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
     _collector = collector;
 
-    String[] stopWordArray = {"just", "my", "i'll","!", "@","rt", "wine", "beer", "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "i", "you", "too", "&", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with"};
+    String[] stopWordArray = {"just", "my", "i'll","!", "@","rt", "wine", "beer", "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "i", "you", "your","&amp", "too", "&", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with"};
     stopWords = new HashSet<String>(Arrays.asList(stopWordArray));
   }
 

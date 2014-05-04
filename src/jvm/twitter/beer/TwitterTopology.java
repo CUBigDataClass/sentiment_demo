@@ -53,8 +53,8 @@ public class TwitterTopology {
 		kafkaSpoutConfig.forceFromStart = true;
 
 	
-		builder.setSpout("tweetSpout", new TwitterSpout(), 10);
-		//builder.setSpout("tweetSpout", new KafkaSpout(kafkaSpoutConfig), 10);
+		//builder.setSpout("tweetSpout", new TwitterSpout(), 10);
+		builder.setSpout("tweetSpout", new KafkaSpout(kafkaSpoutConfig), 10);
 		builder.setBolt("tweetVal", new ExtractBolt(), 5).shuffleGrouping("tweetSpout");
 		builder.setBolt("tweetClassify", new ClassifyBolt(), 2).shuffleGrouping("tweetVal");
 		builder.setBolt("cassandra", new CassandraBolt(), 4).shuffleGrouping("tweetClassify");
