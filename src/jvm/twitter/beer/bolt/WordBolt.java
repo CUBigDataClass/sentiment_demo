@@ -17,6 +17,8 @@ public class WordBolt extends BaseRichBolt {
 	OutputCollector _collector;
   Map<String, Integer> counts_wine = new HashMap<String, Integer>();
   Map<String, Integer> counts_beer = new HashMap<String, Integer>();
+  Integer wineCount;
+  Integer beerCount;
 
   @Override
   public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
@@ -31,11 +33,24 @@ public class WordBolt extends BaseRichBolt {
     Map<String, Integer> counts;
 
     if (type.equals("wine")){
+      
+      if(wineCount == null || wineCount > 500){
+          wineCount = 1;
+          counts_wine.clear();
+        }else{
+          wineCount++;
+        }
+
       count = updateCount(counts_wine.get(word));
       counts_wine.put(word, count);
-
     }
     else{
+       if(beerCount == null || beerCount > 500){
+          beerCount = 1;
+          counts_beer.clear();
+        }else{
+          beerCount++;
+        }
       count = updateCount(counts_beer.get(word));
       counts_beer.put(word, count);
     }

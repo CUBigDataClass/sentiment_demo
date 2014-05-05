@@ -61,7 +61,7 @@ public class TwitterTopology {
 		builder.setBolt("nodejs", new NodeBolt(), 2).shuffleGrouping("tweetClassify");
 
 		builder.setBolt("parse", new ParseBolt(), 3).shuffleGrouping("tweetClassify");
-		builder.setBolt("count", new WordBolt(), 2).fieldsGrouping("parse", new Fields("word"));
+		builder.setBolt("count", new WordBolt(), 2).fieldsGrouping("parse", new Fields("classification"));
 		builder.setBolt("nodeWord", new WordNodeBolt(), 2).fieldsGrouping("count", new Fields("classification"));
 
 		// Create new config
